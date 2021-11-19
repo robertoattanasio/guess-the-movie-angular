@@ -1,0 +1,24 @@
+.button-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+button {
+  font-family: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 0 1px 1px var(--lightGray);
+  padding: 10px 20px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background-color: var(--blue);
+  transition: background-color 0.2s ease-in-out;
+}
+button:hover {
+  cursor: pointer;
+  background-color: var(--green);
+}
