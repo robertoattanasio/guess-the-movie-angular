@@ -1,4 +1,6 @@
 <div class="button-box">
-    <button>Give Up</button>
-    <button>Tip</button>
+    <button class="interactable" (click)="newGameTrigger()">Another One</button>
+    <button class="interactable" (click)="giveUpTrigger()">Give Up</button>
+    <button class="interactable" (click)="hintTrigger()">Tip</button>
+    <button class="attempt">Attempts: {{ attempts$ | async }}</button>
 </div>

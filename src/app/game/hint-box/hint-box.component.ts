@@ -7,15 +7,16 @@ import { Store } from '@ngrx/store';
 import { gameSelector } from '../game.reducer';
 
 @Component({
-  selector: 'app-letter-box',
-  templateUrl: './letter-box.component.html',
-  styleUrls: ['./letter-box.component.css'],
+  selector: 'app-hint-box',
+  templateUrl: './hint-box.component.html',
+  styleUrls: ['./hint-box.component.css'],
 })
-export class LetterBoxComponent implements OnInit {
+export class HintBoxComponent implements OnInit {
   constructor(private store: Store) {}
+
   ngOnInit(): void {}
 
   movieData$ = this.store.select(gameSelector);
 
-  movieNamePlayer$ = this.movieData$.pipe(map((x) => x.movieNamePlayer));
+  hint$ = this.movieData$.pipe(map((x) => x.movieHint));
 }

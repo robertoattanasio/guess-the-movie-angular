@@ -1,8 +1,28 @@
 import { Action, createReducer, createFeatureSelector, on } from '@ngrx/store';
-import { checkLetter } from './game.actions';
+import {
+  startGame,
+  checkLetter,
+  giveUp,
+  hint,
+  checkWord,
+} from './game.actions';
 
+export interface Movie {
+  name: string;
+  hint: string;
+}
 export interface MovieState {
-  movieList: {}[];
+  movieList: Movie[];
+  // Il nome del film verrà splittato in un'array di stringhe per poter ciclare con NgFor
+  movieName: string[];
+  movieHint: string;
+  // Il numero del film nella lista, serve per effettuare alcuni check
+  movieNumber: number;
+  // La stringa del giocatore che all'inizio verrà riempita con asterischi e spazi vuoti
+  movieNamePlayer: string[];
+  reaminingAttempt: number;
+  gameLocked: boolean;
+  infos: string;
 }
 
 const initialMovieState: MovieState = {
@@ -32,12 +52,132 @@ const initialMovieState: MovieState = {
       hint: 'Based on the true story of Jordan Belfort, from his rise to a wealthy stock-broker living the high life to his fall involving crime, corruption and the federal government.',
     },
   ],
+  movieName: [],
+  movieHint: '',
+  movieNumber: 0,
+  movieNamePlayer: [],
+  reaminingAttempt: 7,
+  gameLocked: false,
+  infos: 'Please Enjoy!',
 };
 
 const reducer = createReducer(
   initialMovieState,
+  // Inizio del gioco, richiamato sia da un NgOnInit sia da un bottone di restart
+  on(startGame, (state) => {
+    // Viene scelto un film casuale nella lista di film a disposizione
+    let randomMovie = Math.floor(Math.random() * state.movieList.length);
+    // Nel caso in cui uscisse il film precedente verrà cercato un altro film
+    do {
+      randomMovie = Math.floor(Math.random() * state.movieList.length);
+    } while (randomMovie == state.movieNumber);
+    // Conversione del nome del film da stringa ad array di stringhe(lettere) in UpperCase, questo perché ngFor cicla solo su stringhe
+    let movieNameSplitted = state.movieList[randomMovie].name
+      .toUpperCase()
+      .split('');
+    // Creazione dell'array del giocatore della stessa lunghezza di quello del film ma con tutti i campi vuoti
+    let movieNamePlayer = [...movieNameSplitted];
+    // Sostituzione di tutte le lettere in * e lasciando gli spazi vuoti come tali
+    for (let c = 0; c < movieNamePlayer.length; c++) {
+      if (movieNamePlayer[c] != ' ') {
+        movieNamePlayer[c] = '*';
+      }
+    }
+    // RITORNO DELL'OGGETTO PER INIZIARE A GIOCARE
+    return {
+      ...state,
+      movieName: movieNameSplitted,
+      movieHint: '',
+      movieNumber: randomMovie,
+      movieNamePlayer: movieNamePlayer,
+      reaminingAttempt: 7,
+      infos: 'Please Enjoy!',
+    };
+  }),
+
+  // Controllo della lettera
   on(checkLetter, (state, action) => {
-    return { ...state };
+    // Conversione della lettera ricevuta in Uppercase
+    let receivedLetter = action.letter.toUpperCase();
+    // Copia del nome del film originale e di quello attuale del giocatore per il check
+    let movieToBeChecked = [...state.movieName];
+    let movieNamePlayer = [...state.movieNamePlayer];
+    // Creazione di una stringa per le informazioni da inviare all'utente riguardo l'esito
+    let newInfo = "Nope, this movie doesn't include the letter you're asking.";
+    // La lettera viene controllata in tutto l'array del film e se ci sono dei match verranno scritti in quello del giocatore
+    for (let c = 0; c < movieToBeChecked.length; c++) {
+      if (receivedLetter == movieToBeChecked[c].toUpperCase()) {
+        movieNamePlayer[c] = receivedLetter;
+        newInfo =
+          'Oh yes, this movie contains the letter you asked for. Keep going!';
+      }
+    }
+    // RITORNO DELL'OGGETTO CON RISPOSTE AGGIUNTE ED UN TENTATIVO IN MENO
+    return {
+      ...state,
+      movieNamePlayer: movieNamePlayer,
+      reaminingAttempt: state.reaminingAttempt - 1,
+      infos: newInfo,
+    };
+  }),
+
+  // Controllo della parola intera
+  on(checkWord, (state, action) => {
+    // Store del nome inserito in input dal giocatore
+    let receivedWord = action.word.toUpperCase().split('');
+    // Store del nome originale del film
+    let movieToBeChecked = [...state.movieName];
+    // Creazione di un contatore che servirà per il check dei due array
+    let correctLetterCounter = 0;
+
+    // Controllo primario se i nomi dei due film hanno la stessa lunghezza
+    if (receivedWord.length == movieToBeChecked.length) {
+      // Ciclo For per controllare se i valori nei due array sono esattamente uguali
+      for (let c = 0; c < receivedWord.length; c++) {
+        if (receivedWord[c] === movieToBeChecked[c]) {
+          // Ogni volta che due lettere combaciano il contatore viene aggiornato sommando un 1
+          correctLetterCounter++;
+        }
+      }
+    }
+    // Se la lunghezza dell'array del film e il numero del contatore sono uguali vuol dire che il nome inserito è identico a quello del film originale
+    // e viene ritornato lo stato di vittoria mostrando la risposta esatta
+    let hint = state.movieList[state.movieNumber].hint;
+    if (movieToBeChecked.length == correctLetterCounter) {
+      return {
+        ...state,
+        movieNamePlayer: state.movieName,
+        infos: 'Congratulations, you got it!',
+        movieHint: hint,
+      };
+    }
+    // Se non fosse così viene ritornato l'oggetto con un tentativo disponibile in meno
+    return {
+      ...state,
+      reaminingAttempt: state.reaminingAttempt - 1,
+      infos: "I'm sorry but you're wrong...",
+    };
+  }),
+
+  // Metodo per chi decide di arrendersi
+  on(giveUp, (state) => {
+    let hint = state.movieList[state.movieNumber].hint;
+    return {
+      ...state,
+      movieNamePlayer: state.movieName,
+      movieHint: hint,
+      reaminingAttempt: 0,
+      gameLocked: true,
+    };
+  }),
+
+  // Metodo che mostra il suggerimento
+  on(hint, (state) => {
+    let hint = state.movieList[state.movieNumber].hint;
+    return {
+      ...state,
+      movieHint: hint,
+    };
   })
 );
 

@@ -6,7 +6,7 @@
   align-items: center;
   gap: 10px;
 }
-button {
+button.interactable {
   font-family: inherit;
   font-weight: 500;
   text-transform: uppercase;
@@ -17,8 +17,22 @@ button {
   border-radius: 20px;
   background-color: var(--blue);
   transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 4px 4px -4px gray;
 }
-button:hover {
+button.interactable:hover {
   cursor: pointer;
   background-color: var(--green);
+}
+button.attempt {
+  font-family: inherit;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: white;
+  text-shadow: 0 1px 1px var(--lightGray);
+  padding: 10px 20px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  background-color: var(--green);
+  transition: background-color 0.2s ease-in-out;
+  box-shadow: 0 4px 4px -4px gray;
 }

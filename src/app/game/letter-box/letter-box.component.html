@@ -1,3 +1,6 @@
 <div class="letter-box">
-    letters
+
+    <div class="letter" *ngFor="let letter of movieNamePlayer$ | async, let i = index"
+        [ngStyle]="{borderBottom:letter == ' ' ? '1px solid transparent': '1px solid var(--blue)'}">
+        {{letter == "*" ? '' : letter}}</div>
 </div>

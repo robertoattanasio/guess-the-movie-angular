@@ -1,3 +1,13 @@
 <div class="input-box">
-    input
+    <div class="letter-field">
+        <input type="text" maxlength="1" [(ngModel)]="inputLetter">
+        <button (click)="checkLetter(inputLetter)">Check Letter</button>
+    </div>
+    <div class="word-field">
+        <input type="text" [(ngModel)]="inputWord" placeholder="Type your solution">
+        <button (click)="checkWord(inputWord)">Check Word</button>
+    </div>
+</div>
+<div class="errors-box">
+    <p>{{ answerInfo$ | async}}</p>
 </div>
