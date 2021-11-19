@@ -1,11 +1,12 @@
 <div class="input-box">
     <div class="letter-field">
-        <input type="text" maxlength="1" [(ngModel)]="inputLetter">
-        <button (click)="checkLetter(inputLetter)">Check Letter</button>
+        <input type="text" maxlength="1" [(ngModel)]="inputLetter" [disabled]="insertLetterDisabled$|async">
+        <button (click)="checkLetter(inputLetter)" [disabled]="insertLetterDisabled$ | async">Check Letter</button>
     </div>
-    <div class="word-field">
-        <input type="text" [(ngModel)]="inputWord" placeholder="Type your solution">
-        <button (click)="checkWord(inputWord)">Check Word</button>
+    <div class=" word-field">
+        <input type="text" [(ngModel)]="inputWord" placeholder="Type your solution"
+            [disabled]="insertWordDisabled$ | async">
+        <button (click)="checkWord(inputWord)" [disabled]="insertWordDisabled$ | async">Check Word</button>
     </div>
 </div>
 <div class="errors-box">

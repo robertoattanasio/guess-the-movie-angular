@@ -20,8 +20,11 @@ export interface MovieState {
   movieNumber: number;
   // La stringa del giocatore che all'inizio verrà riempita con asterischi e spazi vuoti
   movieNamePlayer: string[];
-  reaminingAttempt: number;
-  gameLocked: boolean;
+  remainingAttempt: number;
+  insertLetterDisabled: boolean;
+  insertWordDisabled: boolean;
+  tipsDisabled: boolean;
+  giveUpDisabled: boolean;
   infos: string;
 }
 
@@ -56,8 +59,11 @@ const initialMovieState: MovieState = {
   movieHint: '',
   movieNumber: 0,
   movieNamePlayer: [],
-  reaminingAttempt: 7,
-  gameLocked: false,
+  remainingAttempt: 7,
+  insertLetterDisabled: false,
+  insertWordDisabled: false,
+  tipsDisabled: false,
+  giveUpDisabled: false,
   infos: 'Please Enjoy!',
 };
 
@@ -90,7 +96,11 @@ const reducer = createReducer(
       movieHint: '',
       movieNumber: randomMovie,
       movieNamePlayer: movieNamePlayer,
-      reaminingAttempt: 7,
+      remainingAttempt: 7,
+      insertLetterDisabled: false,
+      insertWordDisabled: false,
+      tipsDisabled: false,
+      giveUpDisabled: false,
       infos: 'Please Enjoy!',
     };
   }),
@@ -112,11 +122,13 @@ const reducer = createReducer(
           'Oh yes, this movie contains the letter you asked for. Keep going!';
       }
     }
+    let insertLetterDisabled = state.remainingAttempt - 1;
     // RITORNO DELL'OGGETTO CON RISPOSTE AGGIUNTE ED UN TENTATIVO IN MENO
     return {
       ...state,
       movieNamePlayer: movieNamePlayer,
-      reaminingAttempt: state.reaminingAttempt - 1,
+      remainingAttempt: insertLetterDisabled,
+      insertLetterDisabled: insertLetterDisabled == 0 ? true : false,
       infos: newInfo,
     };
   }),
@@ -149,12 +161,15 @@ const reducer = createReducer(
         movieNamePlayer: state.movieName,
         infos: 'Congratulations, you got it!',
         movieHint: hint,
+        tipsDisabled: true,
+        insertLetterDisabled: true,
+        insertWordDisabled: true,
+        giveUpDisabled: true,
       };
     }
     // Se non fosse così viene ritornato l'oggetto con un tentativo disponibile in meno
     return {
       ...state,
-      reaminingAttempt: state.reaminingAttempt - 1,
       infos: "I'm sorry but you're wrong...",
     };
   }),
@@ -167,7 +182,11 @@ const reducer = createReducer(
       movieNamePlayer: state.movieName,
       movieHint: hint,
       reaminingAttempt: 0,
-      gameLocked: true,
+      insertWordDisabled: true,
+      insertLetterDisabled: true,
+      tipsDisabled: true,
+      giveUpDisabled: true,
+      infos: 'So sad that you gave up. There is the solution!',
     };
   }),
 
@@ -177,6 +196,7 @@ const reducer = createReducer(
     return {
       ...state,
       movieHint: hint,
+      tipsDisabled: true,
     };
   })
 );

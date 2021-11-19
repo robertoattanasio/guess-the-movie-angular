@@ -36,3 +36,7 @@ button.attempt {
   transition: background-color 0.2s ease-in-out;
   box-shadow: 0 4px 4px -4px gray;
 }
+button:disabled:hover {
+  cursor: not-allowed;
+  background-color: var(--blue);
+}

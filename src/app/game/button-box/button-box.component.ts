@@ -17,9 +17,15 @@ export class ButtonBoxComponent implements OnInit {
   constructor(private store: Store) {}
   ngOnInit(): void {}
 
+  // STOREs
   movieData$ = this.store.select(gameSelector);
 
-  attempts$ = this.movieData$.pipe(map((x) => x.reaminingAttempt));
+  // PIPE DEI TENTATIVI
+  attempts$ = this.movieData$.pipe(map((x) => x.remainingAttempt));
+  // PIPE DEI TIPS
+  tipsDisabled$ = this.movieData$.pipe(map((x) => x.tipsDisabled));
+  // PIPE DEL GIVEUP
+  giveUpDisabled$ = this.movieData$.pipe(map((x) => x.giveUpDisabled));
 
   newGameTrigger() {
     this.store.dispatch(startGame());

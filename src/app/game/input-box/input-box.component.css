@@ -52,3 +52,11 @@ button:hover {
   color: black;
   background-color: var(--lightGray);
 }
+input:disabled {
+  cursor: not-allowed;
+}
+button:disabled:hover {
+  cursor: not-allowed;
+  color: white;
+  background-color: var(--green);
+}

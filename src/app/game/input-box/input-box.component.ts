@@ -20,9 +20,16 @@ export class InputBoxComponent implements OnInit {
   inputLetter: string;
   inputWord: string;
 
-  gameData$ = this.store.select(gameSelector);
-  answerInfo$ = this.gameData$.pipe(map((x) => x.infos));
-  gameLocked$ = this.gameData$.pipe(map((x) => x.gameLocked));
+  movieData$ = this.store.select(gameSelector);
+  answerInfo$ = this.movieData$.pipe(map((x) => x.infos));
+
+  // PIPE CHE OSSERVA SE È POSSIBILE INSERIRE LETTERE
+  insertLetterDisabled$ = this.movieData$.pipe(
+    map((x) => x.insertLetterDisabled)
+  );
+
+  // PIPE CHE OSSERVA SE È POSSIBILE INSERIRE PAROLE
+  insertWordDisabled$ = this.movieData$.pipe(map((x) => x.insertWordDisabled));
 
   checkLetter(letter: string) {
     if (this.inputLetter) {
@@ -33,6 +40,7 @@ export class InputBoxComponent implements OnInit {
   checkWord(word: string) {
     if (this.inputWord) {
       this.store.dispatch(checkWord({ word }));
+      this.inputWord = '';
     }
   }
 }
