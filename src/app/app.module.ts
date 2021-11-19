@@ -1,19 +1,36 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+// NGRX
+import { StoreModule } from '@ngrx/store';
+import { gameReducer } from './game/game.reducer';
 // ROUTING MODULE
 import { AppRoutingModule } from './app-routing.module';
+// APP COMPONENT
 import { AppComponent } from './app.component';
 // HEADER COMPONENT
 import { HeaderComponent } from './header/header.component';
+// GAME COMPONENTS
 import { GameComponent } from './game/game.component';
 import { LetterBoxComponent } from './game/letter-box/letter-box.component';
 import { InputBoxComponent } from './game/input-box/input-box.component';
 import { ButtonBoxComponent } from './game/button-box/button-box.component';
 
 @NgModule({
-  declarations: [AppComponent, HeaderComponent, GameComponent, LetterBoxComponent, InputBoxComponent, ButtonBoxComponent],
-  imports: [BrowserModule, AppRoutingModule],
+  declarations: [
+    AppComponent,
+    HeaderComponent,
+    GameComponent,
+    LetterBoxComponent,
+    InputBoxComponent,
+    ButtonBoxComponent,
+  ],
+  imports: [
+    StoreModule.forRoot({
+      guessTheMovie: gameReducer,
+    }),
+    BrowserModule,
+    AppRoutingModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
